@@ -1,0 +1,1 @@
+﻿This is a sample app for BetterCloud interview.
