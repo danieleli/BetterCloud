@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using Customer.Web.Mvc.Models;
 
 namespace Customer.Web.Mvc.Controllers
 {
@@ -10,7 +11,9 @@ namespace Customer.Web.Mvc.Controllers
     {
         public ActionResult Index()
         {
-            return View();
+            var db = new CustomerDb();
+            var models = db.Customers;
+            return View(models);
         }
     }
 }

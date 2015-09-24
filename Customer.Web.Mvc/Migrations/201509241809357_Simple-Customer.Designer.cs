@@ -7,13 +7,13 @@ namespace Customer.Web.Mvc.Migrations
     using System.Resources;
     
     [GeneratedCode("EntityFramework.Migrations", "6.1.3-40302")]
-    public sealed partial class CustomerStub : IMigrationMetadata
+    public sealed partial class SimpleCustomer : IMigrationMetadata
     {
-        private readonly ResourceManager Resources = new ResourceManager(typeof(CustomerStub));
+        private readonly ResourceManager Resources = new ResourceManager(typeof(SimpleCustomer));
         
         string IMigrationMetadata.Id
         {
-            get { return "201509241720553_customer-stub"; }
+            get { return "201509241809357_Simple-Customer"; }
         }
         
         string IMigrationMetadata.Source

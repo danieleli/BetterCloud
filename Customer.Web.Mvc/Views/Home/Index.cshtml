@@ -1,16 +1,33 @@
-﻿@{
-    ViewBag.Title = "Home Page";
+﻿@using Customer.Web.Mvc.Models
+@model IEnumerable<Customer>
+
+@{
+    ViewBag.Title = "Customer List";
 }
+
 <div>&nbsp;</div>
 <div class="jumbotron">
     <h1>A list of customers...</h1>
 </div>
 
-<div class="row">
-    <div class="col-md-12">
-        blash
-    </div>
-    <div class="col-md-12">
-        blash
-    </div>
-</div>
+<table class="table table-hover">
+    <thead>
+    <tr>
+        <th>Id</th>
+        <th>First Name</th>
+        <th>Last Name</th>
+        <th>Actions</th>
+    </tr>
+    </thead>
+    <tbody>
+    @foreach (Customer m in Model)
+    {
+        <tr>
+            <td>@m.Id</td>
+            <td>@m.FirstName</td>
+            <td>@m.LastName</td>
+            <td><button>yo!</button></td>
+        </tr>
+    }
+    </tbody>
+</table>

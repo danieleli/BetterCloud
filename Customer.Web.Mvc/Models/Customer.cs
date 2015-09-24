@@ -19,7 +19,5 @@ namespace Customer.Web.Mvc.Models
         [Required, MinLength(3)]
         public string LastName { get; set; }
         
-        [Timestamp]
-        public byte[] Timestamp { get; set; }
     }
 }

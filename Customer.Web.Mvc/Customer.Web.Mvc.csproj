@@ -136,9 +136,9 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
-    <Compile Include="Migrations\201509241720553_customer-stub.cs" />
-    <Compile Include="Migrations\201509241720553_customer-stub.Designer.cs">
-      <DependentUpon>201509241720553_customer-stub.cs</DependentUpon>
+    <Compile Include="Migrations\201509241809357_Simple-Customer.cs" />
+    <Compile Include="Migrations\201509241809357_Simple-Customer.Designer.cs">
+      <DependentUpon>201509241809357_Simple-Customer.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Customer.cs" />
@@ -190,8 +190,8 @@
     <Content Include="Scripts\jquery-1.10.2.min.map" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Migrations\201509241720553_customer-stub.resx">
-      <DependentUpon>201509241720553_customer-stub.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\201509241809357_Simple-Customer.resx">
+      <DependentUpon>201509241809357_Simple-Customer.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>
