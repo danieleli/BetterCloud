@@ -103,7 +103,6 @@
   <ItemGroup>
     <Compile Include="Models\CustomerTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Controllers\HomeControllerTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="App.config" />
@@ -116,6 +115,9 @@
       <Project>{CEDD7F5B-6238-4F41-A7DB-C0D53D40608D}</Project>
       <Name>Customer.Web.Mvc</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Controllers\" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it.
