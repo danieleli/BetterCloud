@@ -3,17 +3,23 @@ using System.Linq;
 using System.Net;
 using System.Web.Mvc;
 using Customer.Web.Mvc.Models;
+using Customer.Web.Mvc.Services;
 
 namespace Customer.Web.Mvc.Controllers
 {
     public class CustomersController : Controller
     {
-        private readonly CustomerDb _db = new CustomerDb();
+        private readonly ICustomerService _customerService;
+
+        public CustomersController(ICustomerService customerService)
+        {
+            _customerService = customerService;
+        }
 
         // GET: Customers
         public ActionResult Index()
         {
-            return View(_db.Customers.ToList());
+            return View(_customerService.GetAll());
         }
 
         // GET: Customers/Details/5
@@ -23,7 +29,7 @@ namespace Customer.Web.Mvc.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            var customer = _db.Customers.Find(id);
+            var customer = _customerService.GetById(id.Value);
             if (customer == null)
             {
                 return HttpNotFound();
@@ -46,8 +52,7 @@ namespace Customer.Web.Mvc.Controllers
         {
             if (ModelState.IsValid)
             {
-                _db.Customers.Add(customer);
-                _db.SaveChanges();
+                _customerService.Create(customer);
                 return RedirectToAction("Index");
             }
 
@@ -61,7 +66,8 @@ namespace Customer.Web.Mvc.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            var customer = _db.Customers.Find(id);
+            
+            var customer = _customerService.GetById(id.Value);
             if (customer == null)
             {
                 return HttpNotFound();
@@ -78,8 +84,7 @@ namespace Customer.Web.Mvc.Controllers
         {
             if (ModelState.IsValid)
             {
-                _db.Entry(customer).State = EntityState.Modified;
-                _db.SaveChanges();
+                _customerService.Update(customer);
                 return RedirectToAction("Index");
             }
             return View(customer);
@@ -92,7 +97,7 @@ namespace Customer.Web.Mvc.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            var customer = _db.Customers.Find(id);
+            var customer = _customerService.GetById(id.Value);
             if (customer == null)
             {
                 return HttpNotFound();
@@ -105,9 +110,7 @@ namespace Customer.Web.Mvc.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id)
         {
-            var customer = _db.Customers.Find(id);
-            _db.Customers.Remove(customer);
-            _db.SaveChanges();
+            _customerService.Delete(id);
             return RedirectToAction("Index");
         }
 
@@ -115,7 +118,7 @@ namespace Customer.Web.Mvc.Controllers
         {
             if (disposing)
             {
-                _db.Dispose();
+                _customerService.Dispose();
             }
             base.Dispose(disposing);
         }
