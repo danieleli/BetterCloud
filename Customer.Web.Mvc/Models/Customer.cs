@@ -1,22 +1,15 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using System.Data.Entity;
 
 namespace Customer.Web.Mvc.Models
 {
-    public class CustomerDb : DbContext
-    {
-        public CustomerDb():base("CustomerDb") { }
-
-        public DbSet<Customer> Customers { get; set; }
-    }
-
-
     public class Customer
     {
         public int Id { get; set; }
+
+        [Display(Name = "First Name")]
         public string FirstName { get; set; }
 
-        [Required, MinLength(3)]
+        [Required, MinLength(3), Display(Name= "Last Name")]
         public string LastName { get; set; }
         
     }
