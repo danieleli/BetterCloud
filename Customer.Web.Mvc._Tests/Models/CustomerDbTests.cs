@@ -11,7 +11,7 @@ using NUnit.Framework;
 namespace Customer.Web.Mvc._Tests.Models
 {
     [TestFixture]
-    public class CustomerTests
+    public class CustomerDbTests
     {
         [Test]
         public void InstantiateDb()

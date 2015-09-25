@@ -1,59 +1,84 @@
 ﻿using System;
-using System.Data.Entity;
+using System.Diagnostics;
 using System.Linq;
-using Customer.Web.Mvc.Models;
-
+using Customer.Web.Mvc.Services.Geocode;
 
 namespace Customer.Web.Mvc.Services
 {
     using Customer = Models.Customer;
 
-    public interface ICustomerService : IDisposable
+    public interface ICustomerService: IDisposable
     {
-        IQueryable<Customer> GetAll();
-        Customer GetById(int id);
-        void Create(Customer customer);
-        void Update(Customer customer);
+        IQueryable<Customer> Customers { get; } 
+        void Save(Customer c);
         void Delete(int id);
     }
-
-
     public class CustomerService : ICustomerService
     {
-        private readonly ICustomerDb _db;
-
-        public CustomerService()
+        private readonly ICustomerDao _dao;
+        private readonly IGeocodeAdapter _geocoder;
+        
+        public CustomerService(ICustomerDao dao, IGeocodeAdapter geocoder)
         {
-            _db = new CustomerDb();
+            _dao = dao;
+            _geocoder = geocoder;
         }
 
-        public IQueryable<Customer> GetAll()
-        {
-            return _db.Customers;
-        }
+        // Read
+        public IQueryable<Customer> Customers => _dao.Customers;
 
-        public Customer GetById(int id)
-        {
-            return _db.Customers.Find(id);
-        }
-
-        public void Create(Customer customer)
-        {
-            _db.Customers.Add(customer);
-            _db.SaveChanges();
-        }
-
-        public void Update(Customer customer)
-        {
-            _db.Entry(customer).State = EntityState.Modified;
-            _db.SaveChanges();
-        }
-
+        // Delete
         public void Delete(int id)
         {
-            var customer = _db.Customers.Find(id);
-            _db.Customers.Remove(customer);
-            _db.SaveChanges();
+            _dao.Delete(id);
+        }
+
+        // Create / Update
+        public void Save(Customer c)
+        {
+            if (c.Id < 1)
+            {
+                GeocodeAddress(c);
+                _dao.Create(c);
+            }
+            else
+            {
+                if (IsNewAddress(c))
+                {
+                    GeocodeAddress(c);
+                }
+
+                _dao.Update(c);
+            }
+        }
+
+        private bool IsNewAddress(Customer customer)
+        {
+            var previousState = _dao.Customers.Single(c => c.Id == customer.Id);
+
+            return previousState.Address != customer.Address;
+        }
+
+        private void GeocodeAddress(Customer c)
+        {
+            c.Latitude = null;
+            c.Longitude = null;
+
+            if (string.IsNullOrWhiteSpace(c.Address))
+            {
+                return;
+            }
+
+            try
+            {
+                var coordinates = _geocoder.GeocodeAddress(c.Address);
+                c.Latitude = coordinates.Latitude;
+                c.Longitude = coordinates.Longitude;
+            }
+            catch (Exception e)
+            {
+                Debug.WriteLine("Error while geocoding addresss {0} /nError: {1}", c.Address, e.Message);
+            }
         }
 
         public void Dispose()
@@ -65,7 +90,8 @@ namespace Customer.Web.Mvc.Services
         {
             if (disposing)
             {
-                _db.Dispose();
+                _dao.Dispose();
+                // Dispose any other disposible resources here.
             }
         }
     }

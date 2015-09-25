@@ -1,12 +1,12 @@
-﻿using System.Data.Entity;
-using System.Linq;
+﻿using System.Linq;
 using System.Net;
 using System.Web.Mvc;
-using Customer.Web.Mvc.Models;
 using Customer.Web.Mvc.Services;
 
 namespace Customer.Web.Mvc.Controllers
 {
+    using Customer = Models.Customer;
+
     public class CustomersController : Controller
     {
         private readonly ICustomerService _customerService;
@@ -19,7 +19,7 @@ namespace Customer.Web.Mvc.Controllers
         // GET: Customers
         public ActionResult Index()
         {
-            return View(_customerService.GetAll());
+            return View(_customerService.Customers);
         }
 
         // GET: Customers/Details/5
@@ -29,7 +29,7 @@ namespace Customer.Web.Mvc.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            var customer = _customerService.GetById(id.Value);
+            var customer = _customerService.Customers.FirstOrDefault(c=>c.Id == id.Value);
             if (customer == null)
             {
                 return HttpNotFound();
@@ -44,15 +44,12 @@ namespace Customer.Web.Mvc.Controllers
         }
 
         // POST: Customers/Create
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "Id,FirstName,LastName")] Models.Customer customer)
+        [HttpPost, ValidateAntiForgeryToken]
+        public ActionResult Create([Bind(Include = "Id,FirstName,LastName,Address")] Models.Customer customer)
         {
             if (ModelState.IsValid)
             {
-                _customerService.Create(customer);
+                _customerService.Save(customer);
                 return RedirectToAction("Index");
             }
 
@@ -67,7 +64,7 @@ namespace Customer.Web.Mvc.Controllers
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
             
-            var customer = _customerService.GetById(id.Value);
+            var customer = GetCustomerById(id.Value);
             if (customer == null)
             {
                 return HttpNotFound();
@@ -75,16 +72,18 @@ namespace Customer.Web.Mvc.Controllers
             return View(customer);
         }
 
+        private Customer GetCustomerById(int id)
+        {
+            return _customerService.Customers.FirstOrDefault(c => c.Id == id);
+        }
+
         // POST: Customers/Edit/5
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "Id,FirstName,LastName")] Models.Customer customer)
+        [HttpPost, ValidateAntiForgeryToken]
+        public ActionResult Edit([Bind(Include = "Id,FirstName,LastName,Address")] Customer customer)
         {
             if (ModelState.IsValid)
             {
-                _customerService.Update(customer);
+                _customerService.Save(customer);
                 return RedirectToAction("Index");
             }
             return View(customer);
@@ -97,7 +96,7 @@ namespace Customer.Web.Mvc.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            var customer = _customerService.GetById(id.Value);
+            var customer = _customerService.Customers.FirstOrDefault(c => c.Id == id.Value);
             if (customer == null)
             {
                 return HttpNotFound();
@@ -106,8 +105,7 @@ namespace Customer.Web.Mvc.Controllers
         }
 
         // POST: Customers/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
+        [HttpPost, ActionName("Delete"),ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id)
         {
             _customerService.Delete(id);
